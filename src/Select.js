@@ -147,8 +147,6 @@ export type Props = {
   inputId?: string,
   /* Define an id prefix for the select components e.g. {your-id}-value */
   instanceId?: number | string,
-  /* The minimum number of characters needed before menu renders/shows results */
-  minSearchChars: number | string,
   /* Is the select value clearable */
   isClearable?: boolean,
   /* Is the select disabled */
@@ -372,24 +370,18 @@ export default class Select extends Component<Props, State> {
     }
   }
   componentWillReceiveProps(nextProps: Props) {
-    const { options, value, inputValue, minSearchChars = 0
-     } = this.props;
+    const { options, value, inputValue } = this.props;
     // re-cache custom components
     this.cacheComponents(nextProps.components);
     // rebuild the menu options
-    const hasMinSearchChars = nextProps.inputValue &&
-    (nextProps.inputValue.length >= parseInt(minSearchChars, 10))
-    || nextProps.value;
-       
-    if ((
+    if (
       nextProps.value !== value ||
       nextProps.options !== options ||
       nextProps.inputValue !== inputValue
-    ) && (!minSearchChars || hasMinSearchChars)
     ) {
       const selectValue = cleanValue(nextProps.value);
-      const focusedValue = this.getNextFocusedValue(selectValue);
       const menuOptions = this.buildMenuOptions(nextProps, selectValue);
+      const focusedValue = this.getNextFocusedValue(selectValue);
       const focusedOption = this.getNextFocusedOption(menuOptions.focusable);
       this.setState({ menuOptions, selectValue, focusedOption, focusedValue });
     }
